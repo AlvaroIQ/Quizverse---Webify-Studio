@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- EDIT THIS: Nama Game & Brand -->
+    <title>QUIZVERSE - by Webify Studio</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ==========================================================
+           // EDIT THIS: CSS Variables & Theme Styling
+           ========================================================== */
+        :root {
+            --bg-color: #050b14;
+            --card-bg: rgba(13, 22, 38, 0.7);
+            --card-border: rgba(0, 243, 255, 0.15);
+            --primary: #00f3ff;
+            --primary-glow: rgba(0, 243, 255, 0.4);
+            --secondary: #7000ff;
+            --secondary-glow: rgba(112, 0, 255, 0.4);
+            --accent: #00ff66;
+            --danger: #ff3366;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-heading: 'Outfit', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(112, 0, 255, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 40%),
+                linear-gradient(to bottom, #050b14, #020408);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        /* Background grid effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Glassmorphic Card */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .screen.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Buttons & Inputs */
+        .btn {
+            background: linear-gradient(135deg, #00f3ff, #0070ff);
+            color: #050b14;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.6);
+            filter: brightness(1.1);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff3366, #cc0033);
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.6);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(0, 243, 255, 0.2);
+            border-radius: 14px;
+            color: var(--text-main);
+            font-size: 16px;
+            font-family: var(--font-main);
+            outline: none;
+            transition: var(--transition);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+        }
+
+        .logo-tag {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .game-title {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 30%, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+            text-shadow: 0 0 40px rgba(0, 243, 255, 0.2);
+        }
+
+        .game-subtitle {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .project-badge {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            line-height: 1.6;
+        }
+
+        .project-badge span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* High Score Section on Start Screen */
+        .hs-mini-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed rgba(0, 243, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .hs-mini-card div {
+            text-align: center;
+        }
+
+        .hs-mini-card .val {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 15px;
+        }
+
+        /* Category Screen */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        @media(min-width: 480px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .category-btn.random-card {
+                grid-column: span 2;
+            }
+        }
+
+        .category-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 18px 20px;
+            color: var(--text-main);
+            font-family: var(--font-main);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            text-align: left;
+        }
+
+        .category-btn i {
+            font-size: 20px;
+            color: var(--primary);
+            background: rgba(0, 243, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .category-btn:hover {
+            background: rgba(0, 243, 255, 0.07);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.15);
+        }
+
+        .category-btn:hover i {
+            background: var(--primary);
+            color: #050b14;
+        }
+
+        .category-btn.random-card {
+            background: linear-gradient(135deg, rgba(112, 0, 255, 0.15), rgba(0, 243, 255, 0.15));
+            border-color: rgba(112, 0, 255, 0.3);
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .category-btn.random-card i {
+            color: #bd00ff;
+            background: rgba(189, 0, 255, 0.15);
+        }
+
+        .category-btn.random-card:hover {
+            border-color: #bd00ff;
+            box-shadow: 0 5px 20px rgba(189, 0, 255, 0.3);
+        }
+
+        /* Quiz Screen Header */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .quiz-info-badge {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-weight: 600;
+        }
+
+        .streak-badge {
+            color: #ff9900;
+            background: rgba(255, 153, 0, 0.1);
+            border-color: rgba(255, 153, 0, 0.2);
+            display: none;
+            animation: pulse-streak 1.5s infinite;
+        }
+
+        @keyframes pulse-streak {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            width: 0%;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* Timer Box */
+        .timer-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .timer-display {
+            font-family: var(--font-heading);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .score-display {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Question Box */
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-family: var(--font-heading);
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 16px 20px;
+            color: var(--text-main);
+            font-family: var(--font-main);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            text-align: left;
+        }
+
+        .option-btn .opt-key {
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: rgba(0, 243, 255, 0.05);
+            border-color: rgba(0, 243, 255, 0.3);
+            transform: translateX(4px);
+        }
+
+        .option-btn:hover:not(:disabled) .opt-key {
+            background: var(--primary);
+            color: #050b14;
+        }
+
+        /* Option Feedback States */
+        .option-btn.correct {
+            background: rgba(0, 255, 102, 0.15) !important;
+            border-color: var(--accent) !important;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
+        }
+
+        .option-btn.correct .opt-key {
+            background: var(--accent) !important;
+            color: #050b14;
+        }
+
+        .option-btn.wrong {
+            background: rgba(255, 51, 102, 0.15) !important;
+            border-color: var(--danger) !important;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+        }
+
+        .option-btn.wrong .opt-key {
+            background: var(--danger) !important;
+            color: #fff;
+        }
+
+        /* Result Screen */
+        .result-screen {
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-subtitle {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .stat-card .value {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .result-message {
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid rgba(0, 243, 255, 0.15);
+            border-radius: 14px;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--text-main);
+        }
+
+        .result-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Footer Branding */
+        .footer-branding {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+        }
+
+        .footer-branding .brand-name {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Confetti particle canvas overlay */
+        #confetti-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Sound & Music Controls */
+        .audio-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .audio-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .audio-btn:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        .audio-btn.active {
+            color: var(--primary);
+            border-color: var(--primary);
+            background: rgba(0, 243, 255, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Audio Controls -->
+    <div class="audio-controls">
+        <button class="audio-btn active" id="musicToggleBtn" title="Toggle Musik Background">
+            <i class="fa-solid fa-music" id="musicIcon"></i>
+            <span id="musicText">MUSIK ON</span>
+        </button>
+        <button class="audio-btn active" id="soundToggleBtn" title="Toggle Efek Suara">
+            <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+        </button>
+    </div>
+
+    <div class="container">
+        
+        <!-- ==========================================================
+             HALAMAN 1: START SCREEN
+             ========================================================== -->
+        <div id="startScreen" class="screen active">
+            <div class="glass-card start-screen">
+                <!-- EDIT THIS: Logo & Title -->
+                <div class="logo-tag">QUIZVERSE</div>
+                <h1 class="game-title">Uji Keberuntunganmu!</h1>
+                <p class="game-subtitle">Kuis santai untuk mengisi waktu</p>
+
+                <!-- High Score Mini Display -->
+                <div class="hs-mini-card" id="hsMiniCard">
+                    <div>
+                        <div style="font-size:11px; color:var(--text-muted);">PEMAIN TERBAIK</div>
+                        <div class="val" id="hsName">-</div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px; color:var(--text-muted);">SKOR TERTINGGI</div>
+                        <div class="val" id="hsScore">0</div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px; color:var(--text-muted);">KATEGORI</div>
+                        <div class="val" id="hsCat" style="font-size:12px;">-</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="playerNameInput" placeholder="Masukkan Nama Kamu" maxlength="15" autocomplete="off">
+                </div>
+
+                <button class="btn" id="startQuizBtn">
+                    <span>MULAI KUIS</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                <!-- EDIT THIS: Project Info & Branding -->
+                <div class="project-badge">
+                    DAY 03 / 30 &bull; 30 DAYS = 30 PROJECTS<br>
+                    <span>Webify Studio</span>
+                </div>
+            </div>
+            <div class="footer-branding">
+                QUIZVERSE &copy; 2026<br>Created by <span class="brand-name">Webify Studio</span>
+            </div>
+        </div>
+
+        <!-- ==========================================================
+             HALAMAN 2: CATEGORY SCREEN
+             ========================================================== -->
+        <div id="categoryScreen" class="screen">
+            <div class="glass-card">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div class="logo-tag">PILIH KATEGORI</div>
+                    <h2 style="font-size: 24px; margin-bottom: 5px;">Pilih Kategori Kuis</h2>
+                    <p style="color: var(--text-muted); font-size: 14px;">Pilih topik santai untuk dimainkan</p>
+                </div>
+
+                <div class="category-grid">
+                    <button class="category-btn" data-category="tebaktebakan">
+                        <i class="fa-solid fa-bullseye"></i>
+                        Tebak-Tebakan Seru
+                    </button>
+                    <button class="category-btn" data-category="filmakartun">
+                        <i class="fa-solid fa-film"></i>
+                        Film & Kartun
+                    </button>
+                    <button class="category-btn" data-category="gameinternet">
+                        <i class="fa-solid fa-gamepad"></i>
+                        Game & Internet
+                    </button>
+                    <button class="category-btn" data-category="faktaunik">
+                        <i class="fa-solid fa-earth-americas"></i>
+                        Fakta Unik
+                    </button>
+                    <button class="category-btn" data-category="randomseru">
+                        <i class="fa-solid fa-face-laugh-wink"></i>
+                        Random Seru
+                    </button>
+                    <button class="category-btn random-card" data-category="random">
+                        <i class="fa-solid fa-shuffle"></i>
+                        KUIS ACAK
+                    </button>
+                </div>
+
+                <button class="btn btn-secondary" id="backToStartBtn" style="margin-top: 10px;">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali
+                </button>
+            </div>
+            <div class="footer-branding">
+                QUIZVERSE &copy; 2026 &bull; <span class="brand-name">Webify Studio</span>
+            </div>
+        </div>
+
+        <!-- ==========================================================
+             HALAMAN 3: QUIZ GAME SCREEN
+             ========================================================== -->
+        <div id="quizScreen" class="screen">
+            <div class="glass-card">
+                <!-- Quiz Header -->
+                <div class="quiz-header">
+                    <div class="quiz-info-badge" id="questionCounter">Soal 1 / 10</div>
+                    <div class="quiz-info-badge streak-badge" id="streakBadge">🔥 2 STREAK</div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+
+                <!-- Timer & Score Bar -->
+                <div class="timer-box">
+                    <div class="timer-display">
+                        <i class="fa-regular fa-clock"></i>
+                        <span id="timerSeconds">15</span>s
+                    </div>
+                    <div class="score-display">
+                        SKOR: <span id="currentScore" style="color: var(--primary);">0</span>
+                    </div>
+                </div>
+
+                <!-- Question & Options -->
+                <div class="question-text" id="questionText">
+                    Memuat pertanyaan...
+                </div>
+
+                <div class="options-grid" id="optionsContainer">
+                    <!-- Dynamic Options -->
+                </div>
+            </div>
+            <div class="footer-branding">
+                QUIZVERSE &bull; DAY 03 / 30 &bull; <span class="brand-name">Webify Studio</span>
+            </div>
+        </div>
+
+        <!-- ==========================================================
+             HALAMAN 4: RESULT SCREEN
+             ========================================================== -->
+        <div id="resultScreen" class="screen">
+            <div class="glass-card result-screen">
+                <div class="logo-tag">🎉 KUIS SELESAI!</div>
+                <h2 class="result-title" id="resultPlayerName">Keren, Alvaro!</h2>
+                <p class="result-subtitle" id="resultCategoryLabel">Kategori: Film & Kartun</p>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">SKOR</div>
+                        <div class="value" id="resScore">850</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">JAWABAN BENAR</div>
+                        <div class="value" id="resCorrect">8 / 10</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">AKURASI</div>
+                        <div class="value" id="resAccuracy">80%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">STREAK TERBAIK</div>
+                        <div class="value" id="resStreak">4</div>
+                    </div>
+                </div>
+
+                <div class="result-message" id="resultMessage">
+                    MANTAP! Tinggal sedikit lagi! 🔥
+                </div>
+
+                <div class="result-actions">
+                    <button class="btn" id="playAgainBtn">
+                        <i class="fa-solid fa-rotate-right"></i> MAIN LAGI
+                    </button>
+                    <button class="btn btn-secondary" id="changeCatBtn">
+                        <i class="fa-solid fa-list"></i> GANTI KATEGORI
+                    </button>
+                    <button class="btn btn-danger" id="resetHsBtn" style="font-size: 13px; padding: 10px;">
+                        <i class="fa-solid fa-trash"></i> RESET SKOR TERTINGGI
+                    </button>
+                </div>
+            </div>
+            <div class="footer-branding">
+                QUIZVERSE &copy; 2026 &bull; Created by <span class="brand-name">Webify Studio</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==========================================================
+         JAVASCRIPT LOGIC & QUESTION DATABASE
+         ========================================================== -->
+    <script>
+        /* ==========================================================
+           // EDIT QUESTIONS HERE
+           Total 50+ Questions across 5 Fun Categories (10+ each)
+           Konsep: Santai, ringan, hiburan, tidak akademis berat.
+           ========================================================== */
+        const quizData = {
+            tebaktebakan: [
+                {
+                    question: "Apa yang punya kaki tetapi tidak bisa berjalan?",
+                    options: ["Kursi", "Kucing", "Sepatu", "Pohon"],
+                    answer: 0
+                },
+                {
+                    question: "Kalau hujan turun, biasanya kita menggunakan apa supaya tidak basah?",
+                    options: ["Kipas angin", "Payung", "Selimut", "Kacamata hitam"],
+                    answer: 1
+                },
+                {
+                    question: "Benda apa yang biasanya kita gunakan untuk melihat waktu?",
+                    options: ["Televisi", "Jam tangan", "Radio", "Senter"],
+                    answer: 1
+                },
+                {
+                    question: "Hewan apa yang jalannya suka mundur ke belakang?",
+                    options: ["Kuda", "Kucing", "Kepiting", "Kelinci"],
+                    answer: 2
+                },
+                {
+                    question: "Gajah terbang dengan apa kalau lagi iseng?",
+                    options: ["Pakai sayap", "Pakai balon", "Ketahuan bohongnya", "Pakai helikopter"],
+                    answer: 2
+                },
+                {
+                    question: "Makin diisi makin berat, tapi makin dikosongkan malah makin ringan. Apakah itu?",
+                    options: ["Dompet kosong", "Balon", "Kardus mainan", "Kantong plastik"],
+                    answer: 3
+                },
+                {
+                    question: "Ayam apa yang paling besar sedunia?",
+                    options: ["Ayam goreng", "Ayam kampus", "Ayam semesta", "Ayam betina tetangga"],
+                    answer: 2
+                },
+                {
+                    question: "Penyanyi luar negeri siapa yang suka naik sepeda?",
+                    options: ["Selena Gowes", "Justin Bieber", "Bruno Mars", "Taylor Swift"],
+                    answer: 0
+                },
+                {
+                    question: "Bunderan apa yang kalau diputar keluar airnya?",
+                    options: ["Kran air bulat", "Ban mobil bocor", "Kacamata renang", "Kelereng"],
+                    answer: 0
+                },
+                {
+                    question: "Kalau dipukul tidak sakit, malah bunyi nyaring. Apakah itu?",
+                    options: ["Pipi teman", "Gendang", "Kasur empuk", "Bantal"],
+                    answer: 1
+                }
+            ],
+            filmakartun: [
+                {
+                    question: "Siapa nama tokoh utama wanita dalam film animasi Frozen yang punya kekuatan es?",
+                    options: ["Cinderella", "Elsa", "Moana", "Rapunzel"],
+                    answer: 1
+                },
+                {
+                    question: "Apa nama rumah berbentuk buah nanas tempat tinggal SpongeBob SquarePants?",
+                    options: ["Di dalam kerang", "Di dalam batu", "Di dalam buah nanas", "Di dalam gua"],
+                    answer: 2
+                },
+                {
+                    question: "Siapa sahabat karib Mickey Mouse yang bertubuh tinggi dan telinga besar?",
+                    options: ["Donald Duck", "Goofy", "Pluto", "Bugs Bunny"],
+                    answer: 1
+                },
+                {
+                    question: "Di film Up, rumah kakek Carl terbang menggunakan bantuan apa?",
+                    options: ["Helikopter mini", "Ribuan balon warna-warni", "Pesawat kertas", "Kipas raksasa"],
+                    answer: 1
+                },
+                {
+                    question: "Siapa nama koboi mainan utama dalam film animasi Toy Story?",
+                    options: ["Buzz Lightyear", "Woody", "Andy", "Mr. Potato"],
+                    answer: 1
+                },
+                {
+                    question: "Makhluk ogre hijau besar yang tinggal di rawa dalam film animasi populer adalah?",
+                    options: ["Shrek", "Minions", "Kung Fu Panda", "Hulk"],
+                    answer: 0
+                },
+                {
+                    question: "Apa makanan kesukaan tokoh kartun Garfield si kucing pemalas?",
+                    options: ["Ikan asin", "Pizza keju", "Lasagna", "Burger jumbo"],
+                    answer: 2
+                },
+                {
+                    question: "Siapa nama ikan kecil berwarna jingga yang hilang dalam film Finding Nemo?",
+                    options: ["Dory", "Marlin", "Nemo", "Bruce"],
+                    answer: 2
+                },
+                {
+                    question: "Apa warna kostum utama dari superhero Spider-Man versi klasik?",
+                    options: ["Hitam putih", "Merah dan biru", "Kuning hijau", "Ungu jingga"],
+                    answer: 1
+                },
+                {
+                    question: "Siapa nama partner setia Batman dalam membasmi kejahatan di kota Gotham?",
+                    options: ["Superman", "Robin", "Iron Man", "Flash"],
+                    answer: 1
+                }
+            ],
+            gameinternet: [
+                {
+                    question: "Game kotak pasir (sandbox) populer dengan karakter utama ikonik bernama Steve adalah?",
+                    options: ["Roblox", "Minecraft", "Terraria", "Fortnite"],
+                    answer: 1
+                },
+                {
+                    question: "Platform media sosial apa yang terkenal dengan video pendek berdurasi singkat?",
+                    options: ["TikTok", "Wikipedia", "Google Drive", "Microsoft Word"],
+                    answer: 0
+                },
+                {
+                    question: "Benda apa yang biasanya digerakkan dengan tangan untuk mengarahkan kursor di PC?",
+                    options: ["Keyboard", "Mouse (Tikus komputer)", "Headset", "Monitor"],
+                    answer: 1
+                },
+                {
+                    question: "Game battle royale seru yang karakternya suka turun dari pesawat pakai parasut dengan gaya santai adalah?",
+                    options: ["Free Fire / PUBG", "MS Excel", "Adobe Photoshop", "Google Maps"],
+                    answer: 0
+                },
+                {
+                    question: "Apa nama situs web berbagi video terbesar di dunia milik Google?",
+                    options: ["YouTube", "Netflix", "Spotify", "Twitch"],
+                    answer: 0
+                },
+                {
+                    question: "Emotikon apa yang biasanya dipakai untuk menyatakan tertawa terpingkal-pingkal di chat?",
+                    options: [":(", ":/", "XD atau 😂", ">_<"],
+                    answer: 2
+                },
+                {
+                    question: "Istilah apa yang sering dipakai kalau internet kita tiba-tiba lambat atau terputus?",
+                    options: ["Lagi gacor", "Lag / Ngadat", "Gaskeun", "Mantap jiwa"],
+                    answer: 1
+                },
+                {
+                    question: "Apa nama mesin pencari (search engine) nomor satu di dunia saat ini?",
+                    options: ["Google", "Yahoo Messenger", "Windows", "Bluetooth"],
+                    answer: 0
+                },
+                {
+                    question: "Game simulasi kehidupan di mana pemain bisa membangun rumah dan mengurus karakter virtual adalah?",
+                    options: ["The Sims", "Pac-Man", "Tetris", "Solitaire"],
+                    answer: 0
+                },
+                {
+                    question: "Apa fungsi utama dari tombol 'Spasi' (Spacebar) yang panjang di keyboard?",
+                    options: ["Menghapus huruf", "Membuat spasi / jarak kosong", "Mematikan PC", "Membuka browser"],
+                    answer: 1
+                }
+            ],
+            faktaunik: [
+                {
+                    question: "Hewan mamalia darat apa yang dikenal dengan julukan raja hutan?",
+                    options: ["Kuda nil", "Singa", "Harimau", "Beruang"],
+                    answer: 1
+                },
+                {
+                    question: "Warna apa yang dihasilkan jika kita mencampur warna cat biru dan kuning?",
+                    options: ["Merah", "Hijau", "Ungu", "Oranye"],
+                    answer: 1
+                },
+                {
+                    question: "Berapa jumlah total hari dalam satu minggu?",
+                    options: ["5 hari", "6 hari", "7 hari", "8 hari"],
+                    answer: 2
+                },
+                {
+                    question: "Buah apakah yang bagian bijinya justru berada di bagian luar kulitnya?",
+                    options: ["Apel", "Stroberi", "Semangka", "Pisang"],
+                    answer: 1
+                },
+                {
+                    question: "Hewan air lucu apa yang terkenal sangat cerdas dan suka melompat di permukaan laut?",
+                    options: ["Hiu", "Lumba-lumba", "Paus", "Ubur-ubur"],
+                    answer: 1
+                },
+                {
+                    question: "Burung apa yang bisa terbang mundur di udara dengan sangat lincah?",
+                    options: ["Burung Kolibri", "Burung Merpati", "Burung Hantu", "Burung Elang"],
+                    answer: 0
+                },
+                {
+                    question: "Bentuk dasar dari irisan buah semangka utuh saat dibelah biasanya menyerupai apa?",
+                    options: ["Segitiga", "Lingkaran penuh", "Kotak", "Trapesium"],
+                    answer: 0
+                },
+                {
+                    question: "Berapa jumlah jari tangan normal yang dimiliki oleh seorang manusia?",
+                    options: ["8 jari", "10 jari", "12 jari", "14 jari"],
+                    answer: 1
+                },
+                {
+                    question: "Benda langit apa yang bersinar sangat terang di langit pada malam hari selain bintang?",
+                    options: ["Bulan", "Awan", "Pelangi", "Komet biru"],
+                    answer: 0
+                },
+                {
+                    question: "Minuman segar apa yang bahan utamanya terbuat dari perasan buah jeruk segar dan es batu?",
+                    options: ["Es teh manis", "Es jeruk", "Susu soda", "Kopi hitam"],
+                    answer: 1
+                }
+            ],
+            randomseru: [
+                {
+                    question: "Kalau kamu punya 3 apel dan kamu makan 2, sisa berapa apel di tanganmu?",
+                    options: ["1 buah", "2 buah", "3 buah", "Habis"],
+                    answer: 0
+                },
+                {
+                    question: "Warna apa yang identik dengan bendera kebangsaan Republik Indonesia?",
+                    options: ["Merah dan Putih", "Biru dan Kuning", "Hijau dan Hitam", "Ungu dan Merah"],
+                    answer: 0
+                },
+                {
+                    question: "Hewan peliharaan lucu apa yang suka mengeong dan gemar bermain benang wol?",
+                    options: ["Anjing", "Kucing", "Kelinci", "Hamster"],
+                    answer: 1
+                },
+                {
+                    question: "Apa nama planet tempat tinggal kita saat ini di tata surya?",
+                    options: ["Mars", "Venus", "Bumi", "Saturnus"],
+                    answer: 2
+                },
+                {
+                    question: "Alat musik tradisional Indonesia dari bambu yang cara memainkannya digoyangkan adalah?",
+                    options: ["Gitar", "Angklung", "Piano", "Drum"],
+                    answer: 1
+                },
+                {
+                    question: "Es krim rasa apa yang biasanya berwarna cokelat manis dan disukai banyak orang?",
+                    options: ["Cokelat", "Vanila", "Stroberi", "Mint"],
+                    answer: 0
+                },
+                {
+                    question: "Kendaraan roda dua berukuran kecil yang dikayuh menggunakan kaki disebut?",
+                    options: ["Sepeda", "Mobil", "Kereta", "Pesawat"],
+                    answer: 0
+                },
+                {
+                    question: "Hari apa yang biasanya menjadi hari libur favorit sekolah bagi para pelajar?",
+                    options: ["Hari Senin", "Hari Rabu", "Hari Minggu", "Hari Selasa"],
+                    answer: 2
+                },
+                {
+                    question: "Apa nama bunga berukuran besar berwarna kuning cerah yang selalu menghadap matahari?",
+                    options: ["Bunga Mawar", "Bunga Melati", "Bunga Matahari", "Bunga Anggrek"],
+                    answer: 2
+                },
+                {
+                    question: "Siapa nama pembuat game santai Quizverse ini?",
+                    options: ["Webify Studio", "Google Play", "Microsoft Corp", "Apple Inc"],
+                    answer: 0
+                }
+            ]
+        };
+
+        // ==========================================================
+        // GAME STATE & CONFIGURATION VARIABLES
+        // ==========================================================
+        // // EDIT THIS: Waktu Timer per soal & Sistem Skor
+        const CONFIG = {
+            questionTime: 15, // Detik per soal
+            pointsPerCorrect: 100,
+            speedBonusMax: 50
+        };
+
+        let gameState = {
+            playerName: "",
+            category: "",
+            categoryName: "",
+            questions: [],
+            currentIndex: 0,
+            score: 0,
+            correctCount: 0,
+            streak: 0,
+            bestStreak: 0,
+            timer: null,
+            timeLeft: CONFIG.questionTime,
+            isAnswered: false,
+            soundEnabled: true,
+            musicEnabled: true,
+            bgMusicInterval: null
+        };
+
+        // ==========================================================
+        // WEB AUDIO API SOUND & BGM SYSTEM
+        // ==========================================================
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // SFX Generator
+        function playSound(type) {
+            if (!gameState.soundEnabled) return;
+            try {
+                initAudio();
+                if(!audioCtx) return;
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(200, now);
+                    osc.frequency.setValueAtTime(130, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'complete') {
+                    // Victory Arpeggio
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.type = 'sine';
+                        o.frequency.setValueAtTime(freq, now + (idx * 0.1));
+                        g.gain.setValueAtTime(0.15, now + (idx * 0.1));
+                        g.gain.exponentialRampToValueAtTime(0.01, now + (idx * 0.1) + 0.3);
+                        o.start(now + (idx * 0.1));
+                        o.stop(now + (idx * 0.1) + 0.3);
+                    });
+                }
+            } catch(e) {
+                console.log("Audio not supported or blocked", e);
+            }
+        }
+
+        // Fun & Energetic Procedural BGM (Web Audio API)
+        const bgmNotes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63]; // C4, E4, G4, C5, G4, E4
+        let bgmStep = 0;
+
+        function startBGM() {
+            if (!gameState.musicEnabled) return;
+            if (gameState.bgMusicInterval) return; // Already running
+
+            initAudio();
+            gameState.bgMusicInterval = setInterval(() => {
+                if (!gameState.musicEnabled || !audioCtx) return;
+                try {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    
+                    const freq = bgmNotes[bgmStep % bgmNotes.length];
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                    
+                    gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.25);
+                    
+                    bgmStep++;
+                } catch(e) {
+                    console.log("BGM error", e);
+                }
+            }, 300); // 300ms tempo santai
+        }
+
+        function stopBGM() {
+            if (gameState.bgMusicInterval) {
+                clearInterval(gameState.bgMusicInterval);
+                gameState.bgMusicInterval = null;
+            }
+            bgmStep = 0;
+        }
+
+        // ==========================================================
+        // DOM ELEMENTS & SCREEN NAVIGATION
+        // ==========================================================
+        const screens = {
+            start: document.getElementById('startScreen'),
+            category: document.getElementById('categoryScreen'),
+            quiz: document.getElementById('quizScreen'),
+            result: document.getElementById('resultScreen')
+        };
+
+        function switchScreen(screenName) {
+            Object.values(screens).forEach(scr => {
+                scr.classList.remove('active');
+            });
+            setTimeout(() => {
+                screens[screenName].classList.add('active');
+            }, 100);
+
+            // Manage BGM State based on screen
+            if (screenName === 'start') {
+                stopBGM();
+            } else {
+                if (gameState.musicEnabled) {
+                    startBGM();
+                }
+            }
+        }
+
+        // ==========================================================
+        // HIGH SCORE LOCALSTORAGE MANAGEMENT
+        // ==========================================================
+        const HS_KEY = 'quizverse_high_score_v2';
+
+        function getHighScore() {
+            const data = localStorage.getItem(HS_KEY);
+            return data ? JSON.parse(data) : { name: '-', score: 0, category: '-' };
+        }
+
+        function saveHighScore(name, score, category) {
+            const currentHs = getHighScore();
+            if (score > currentHs.score) {
+                const newHs = { name, score, category };
+                localStorage.setItem(HS_KEY, JSON.stringify(newHs));
+                updateHighScoreDisplay();
+                return true;
+            }
+            return false;
+        }
+
+        function updateHighScoreDisplay() {
+            const hs = getHighScore();
+            document.getElementById('hsName').textContent = hs.name;
+            document.getElementById('hsScore').textContent = hs.score;
+            document.getElementById('hsCat').textContent = hs.category;
+        }
+
+        // ==========================================================
+        // GAMEPLAY CONTROLLER
+        // ==========================================================
+        
+        // Start Quiz Button Handler
+        document.getElementById('startQuizBtn').addEventListener('click', () => {
+            playSound('click');
+            const nameInput = document.getElementById('playerNameInput');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                nameInput.style.borderColor = 'var(--danger)';
+                nameInput.focus();
+                setTimeout(() => nameInput.style.borderColor = '', 1500);
+                return;
+            }
+
+            gameState.playerName = name;
+            switchScreen('category');
+        });
+
+        document.getElementById('backToStartBtn').addEventListener('click', () => {
+            playSound('click');
+            switchScreen('start');
+        });
+
+        // Category Selection Handlers
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                playSound('click');
+                const cat = btn.getAttribute('data-category');
+                startQuizSession(cat);
+            });
+        });
+
+        function startQuizSession(categoryKey) {
+            gameState.category = categoryKey;
+            
+            if (categoryKey === 'random') {
+                const keys = Object.keys(quizData);
+                const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                gameState.questions = [...quizData[randomKey]];
+                gameState.categoryName = "Kuis Acak (" + capitalizeCategory(randomKey) + ")";
+            } else {
+                gameState.questions = [...quizData[categoryKey]];
+                gameState.categoryName = getCategoryDisplayName(categoryKey);
+            }
+
+            // Shuffle questions and select 10
+            gameState.questions = shuffleArray(gameState.questions).slice(0, 10);
+            
+            // Reset game progress
+            gameState.currentIndex = 0;
+            gameState.score = 0;
+            gameState.correctCount = 0;
+            gameState.streak = 0;
+            gameState.bestStreak = 0;
+
+            switchScreen('quiz');
+            loadQuestion();
+        }
+
+        function getCategoryDisplayName(key) {
+            const names = {
+                tebaktebakan: "Tebak-Tebakan Seru",
+                filmakartun: "Film & Kartun",
+                gameinternet: "Game & Internet",
+                faktaunik: "Fakta Unik",
+                randomseru: "Random Seru"
+            };
+            return names[key] || "Kuis Seru";
+        }
+
+        function capitalizeCategory(str) {
+            return str.replace(/([A-Z])/g, ' $1').trim();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Load Question
+        function loadQuestion() {
+            clearInterval(gameState.timer);
+            gameState.isAnswered = false;
+
+            if (gameState.currentIndex >= gameState.questions.length) {
+                endQuiz();
+                return;
+            }
+
+            const qData = gameState.questions[gameState.currentIndex];
+            
+            // Update UI elements
+            document.getElementById('questionCounter').textContent = `Soal ${gameState.currentIndex + 1} / ${gameState.questions.length}`;
+            document.getElementById('currentScore').textContent = gameState.score;
+            document.getElementById('questionText').textContent = qData.question;
+            
+            // Progress Bar
+            const progressPercent = ((gameState.currentIndex) / gameState.questions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+            // Streak Badge UI
+            const streakBadge = document.getElementById('streakBadge');
+            if (gameState.streak >= 2) {
+                streakBadge.style.display = 'block';
+                streakBadge.textContent = `🔥 ${gameState.streak} STREAK`;
+            } else {
+                streakBadge.style.display = 'none';
+            }
+
+            // Render Options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            const optionKeys = ['A', 'B', 'C', 'D'];
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `
+                    <span style="display:flex; align-items:center; gap:12px;">
+                        <span class="opt-key">${optionKeys[idx]}</span>
+                        <span>${opt}</span>
+                    </span>
+                `;
+                btn.addEventListener('click', () => handleAnswer(idx, qData.answer, btn));
+                optionsContainer.appendChild(btn);
+            });
+
+            // Start Timer
+            gameState.timeLeft = CONFIG.questionTime;
+            document.getElementById('timerSeconds').textContent = gameState.timeLeft;
+            
+            gameState.timer = setInterval(() => {
+                gameState.timeLeft--;
+                document.getElementById('timerSeconds').textContent = gameState.timeLeft;
+
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(gameState.timer);
+                    handleTimeOut(qData.answer);
+                }
+            }, 1000);
+        }
+
+        // Handle Answer Selection
+        function handleAnswer(selectedIndex, correctIndex, selectedBtn) {
+            if (gameState.isAnswered) return;
+            gameState.isAnswered = true;
+            clearInterval(gameState.timer);
+
+            const optionBtns = document.querySelectorAll('.option-btn');
+            optionBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = selectedIndex === correctIndex;
+
+            if (isCorrect) {
+                playSound('correct');
+                selectedBtn.classList.add('correct');
+                gameState.correctCount++;
+                gameState.streak++;
+                if (gameState.streak > gameState.bestStreak) {
+                    gameState.bestStreak = gameState.streak;
+                }
+
+                // Score with speed bonus
+                let questionScore = CONFIG.pointsPerCorrect;
+                let speedBonus = Math.floor((gameState.timeLeft / CONFIG.questionTime) * CONFIG.speedBonusMax);
+                gameState.score += (questionScore + speedBonus);
+            } else {
+                playSound('wrong');
+                selectedBtn.classList.add('wrong');
+                gameState.streak = 0; // Reset streak
+
+                // Highlight correct answer
+                optionBtns[correctIndex].classList.add('correct');
+            }
+
+            document.getElementById('currentScore').textContent = gameState.score;
+
+            // Automatically proceed to next question after 1.2 seconds
+            setTimeout(() => {
+                gameState.currentIndex++;
+                loadQuestion();
+            }, 1200);
+        }
+
+        // Handle Time Out
+        function handleTimeOut(correctIndex) {
+            if (gameState.isAnswered) return;
+            gameState.isAnswered = true;
+            playSound('wrong');
+            gameState.streak = 0;
+
+            const optionBtns = document.querySelectorAll('.option-btn');
+            optionBtns.forEach(b => b.disabled = true);
+            optionBtns[correctIndex].classList.add('correct');
+
+            setTimeout(() => {
+                gameState.currentIndex++;
+                loadQuestion();
+            }, 1200);
+        }
+
+        // End Quiz & Show Results
+        function endQuiz() {
+            playSound('complete');
+            switchScreen('result');
+
+            const totalQ = gameState.questions.length;
+            const accuracy = Math.round((gameState.correctCount / totalQ) * 100);
+
+            document.getElementById('resultPlayerName').textContent = `Keren, ${gameState.playerName}!`;
+            document.getElementById('resultCategoryLabel').textContent = `Kategori: ${gameState.categoryName}`;
+            document.getElementById('resScore').textContent = gameState.score;
+            document.getElementById('resCorrect').textContent = `${gameState.correctCount} / ${totalQ}`;
+            document.getElementById('resAccuracy').textContent = `${accuracy}%`;
+            document.getElementById('resStreak').textContent = gameState.bestStreak;
+
+            // Result Message based on percentage (Bahasa Indonesia)
+            const msgEl = document.getElementById('resultMessage');
+            if (accuracy >= 90) {
+                msgEl.textContent = "LUAR BIASA! Kamu jago banget! 🏆";
+                triggerConfetti();
+            } else if (accuracy >= 70) {
+                msgEl.textContent = "MANTAP! Tinggal sedikit lagi! 🔥";
+                triggerConfetti();
+            } else if (accuracy >= 50) {
+                msgEl.textContent = "LUMAYAN! Coba sekali lagi! 😎";
+            } else {
+                msgEl.textContent = "Wah, coba lagi yuk! 😄";
+            }
+
+            // Save High Score Check
+            saveHighScore(gameState.playerName, gameState.score, gameState.categoryName);
+        }
+
+        // Result Screen Button Handlers
+        document.getElementById('playAgainBtn').addEventListener('click', () => {
+            playSound('click');
+            startQuizSession(gameState.category);
+        });
+
+        document.getElementById('changeCatBtn').addEventListener('click', () => {
+            playSound('click');
+            switchScreen('category');
+        });
+
+        document.getElementById('resetHsBtn').addEventListener('click', () => {
+            playSound('click');
+            if(confirm("Apakah kamu yakin ingin mereset Skor Tertinggi?")) {
+                localStorage.removeItem(HS_KEY);
+                updateHighScoreDisplay();
+                alert("Skor tertinggi berhasil direset!");
+            }
+        });
+
+        // ==========================================================
+        // SIMPLE CONFETTI EFFECT
+        // ==========================================================
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const ctx = confettiCanvas.getContext('2d');
+        let particles = [];
+
+        function triggerConfetti() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+            particles = [];
+
+            for (let i = 0; i < 120; i++) {
+                particles.push({
+                    x: confettiCanvas.width / 2,
+                    y: confettiCanvas.height / 2,
+                    vx: (Math.random() - 0.5) * 15,
+                    vy: (Math.random() - 0.7) * 15,
+                    size: Math.random() * 8 + 4,
+                    color: ['#00f3ff', '#7000ff', '#00ff66', '#ff3366', '#ff9900'][Math.floor(Math.random() * 5)],
+                    life: Math.random() * 60 + 60
+                });
+            }
+
+            requestAnimationFrame(updateConfetti);
+        }
+
+        function updateConfetti() {
+            ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.4; // Gravity
+                p.life--;
+
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (p.life <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            if (particles.length > 0) {
+                requestAnimationFrame(updateConfetti);
+            }
+        }
+
+        // Audio Toggle Handlers with LocalStorage Persistence
+        const MUSIC_PREF_KEY = 'quizverse_music_enabled';
+        const SOUND_PREF_KEY = 'quizverse_sound_enabled';
+
+        const musicToggleBtn = document.getElementById('musicToggleBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicText = document.getElementById('musicText');
+
+        const soundToggleBtn = document.getElementById('soundToggleBtn');
+        const soundIcon = document.getElementById('soundIcon');
+
+        musicToggleBtn.addEventListener('click', () => {
+            gameState.musicEnabled = !gameState.musicEnabled;
+            localStorage.setItem(MUSIC_PREF_KEY, gameState.musicEnabled);
+            updateAudioUI();
+
+            if (gameState.musicEnabled) {
+                if (screens.start.classList.contains('active') === false) {
+                    startBGM();
+                }
+            } else {
+                stopBGM();
+            }
+            playSound('click');
+        });
+
+        soundToggleBtn.addEventListener('click', () => {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            localStorage.setItem(SOUND_PREF_KEY, gameState.soundEnabled);
+            updateAudioUI();
+            playSound('click');
+        });
+
+        function updateAudioUI() {
+            if (gameState.musicEnabled) {
+                musicIcon.className = 'fa-solid fa-music';
+                musicText.textContent = 'MUSIK ON';
+                musicToggleBtn.classList.add('active');
+            } else {
+                musicIcon.className = 'fa-solid fa-music-slash';
+                musicText.textContent = 'MUSIK OFF';
+                musicToggleBtn.classList.remove('active');
+            }
+
+            if (gameState.soundEnabled) {
+                soundIcon.className = 'fa-solid fa-volume-high';
+                soundToggleBtn.classList.add('active');
+            } else {
+                soundIcon.className = 'fa-solid fa-volume-xmark';
+                soundToggleBtn.classList.remove('active');
+            }
+        }
+
+        // Initialize App on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedMusic = localStorage.getItem(MUSIC_PREF_KEY);
+            if (savedMusic !== null) {
+                gameState.musicEnabled = savedMusic === 'true';
+            }
+
+            const savedSound = localStorage.getItem(SOUND_PREF_KEY);
+            if (savedSound !== null) {
+                gameState.soundEnabled = savedSound === 'true';
+            }
+
+            updateAudioUI();
+            updateHighScoreDisplay();
+        });
+    </script>
+</body>
+</html>
